@@ -1,5 +1,5 @@
 ---
-version: '2'
+version: "2"
 services:
   exchange:
     command: sh -c 'bundle exec rails db:setup && bundle exec puma -C config/puma.config'

@@ -26,78 +26,78 @@ spec:
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-          - preference:
-              matchExpressions:
-              - key: tier
-                operator: In
-                values:
-                - foreground
-            weight: 1
+            - preference:
+                matchExpressions:
+                  - key: tier
+                    operator: In
+                    values:
+                      - foreground
+              weight: 1
       containers:
-      - env:
-        - name: PORT
-          value: '8080'
-        - name: RAILS_SERVE_STATIC_FILES
-          value: 'true'
-        - name: RAILS_LOG_TO_STDOUT
-          value: 'true'
-        - name: RAILS_ENV
-          value: production
-        - name: DATADOG_TRACE_AGENT_HOSTNAME
-          valueFrom:
-            fieldRef:
-              fieldPath: spec.nodeName
-        envFrom:
-        - configMapRef:
-            name: exchange-environment
-        image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/exchange:sca
-        imagePullPolicy: Always
-        name: exchange-web
-        ports:
-        - containerPort: 8080
-          name: exchange-http
-        readinessProbe:
-          httpGet:
-            httpHeaders:
-            - name: X-Forwarded-Proto
-              value: https
-            path: /api/health
-            port: exchange-http
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          timeoutSeconds: 5
-      - env:
-        - name: NGINX_DEFAULT_CONF
-          valueFrom:
-            configMapKeyRef:
-              key: default
-              name: nginx-config
-        image: artsy/docker-nginx:1.14.2
-        lifecycle:
-          preStop:
-            exec:
-              command:
-              - /usr/sbin/nginx
-              - -s
-              - quit
-        name: exchange-nginx
-        ports:
-        - containerPort: 80
-          name: nginx-http
-        readinessProbe:
-          initialDelaySeconds: 5
-          periodSeconds: 15
-          tcpSocket:
-            port: nginx-http
-          timeoutSeconds: 10
-        volumeMounts:
-        - mountPath: /etc/nginx/ssl
-          name: nginx-secrets
+        - env:
+            - name: PORT
+              value: "8080"
+            - name: RAILS_SERVE_STATIC_FILES
+              value: "true"
+            - name: RAILS_LOG_TO_STDOUT
+              value: "true"
+            - name: RAILS_ENV
+              value: production
+            - name: DATADOG_TRACE_AGENT_HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          envFrom:
+            - configMapRef:
+                name: exchange-environment
+          image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/exchange:sca
+          imagePullPolicy: Always
+          name: exchange-web
+          ports:
+            - containerPort: 8080
+              name: exchange-http
+          readinessProbe:
+            httpGet:
+              httpHeaders:
+                - name: X-Forwarded-Proto
+                  value: https
+              path: /api/health
+              port: exchange-http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+        - env:
+            - name: NGINX_DEFAULT_CONF
+              valueFrom:
+                configMapKeyRef:
+                  key: default
+                  name: nginx-config
+          image: artsy/docker-nginx:1.14.2
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /usr/sbin/nginx
+                  - -s
+                  - quit
+          name: exchange-nginx
+          ports:
+            - containerPort: 80
+              name: nginx-http
+          readinessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            tcpSocket:
+              port: nginx-http
+            timeoutSeconds: 10
+          volumeMounts:
+            - mountPath: /etc/nginx/ssl
+              name: nginx-secrets
       volumes:
-      - name: nginx-secrets
-        secret:
-          defaultMode: 420
-          secretName: nginx-secrets
+        - name: nginx-secrets
+          secret:
+            defaultMode: 420
+            secretName: nginx-secrets
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -123,35 +123,35 @@ spec:
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-          - preference:
-              matchExpressions:
-              - key: tier
-                operator: In
-                values:
-                - background
-            weight: 1
+            - preference:
+                matchExpressions:
+                  - key: tier
+                    operator: In
+                    values:
+                      - background
+              weight: 1
       containers:
-      - command:
-        - bundle
-        - exec
-        - sidekiq
-        envFrom:
-        - configMapRef:
-            name: exchange-environment
-        image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/exchange:sca
-        imagePullPolicy: Always
-        name: exchange-sidekiq
+        - command:
+            - bundle
+            - exec
+            - sidekiq
+          envFrom:
+            - configMapRef:
+                name: exchange-environment
+          image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/exchange:sca
+          imagePullPolicy: Always
+          name: exchange-sidekiq
 ---
 apiVersion: v1
 kind: Service
 metadata:
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
-    service.beta.kubernetes.io/aws-load-balancer-connection-draining-enabled: 'true'
-    service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: '300'
-    service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: 'true'
+    service.beta.kubernetes.io/aws-load-balancer-connection-draining-enabled: "true"
+    service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "300"
+    service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:iam::585031190124:server-certificate/2018-01-17_artsy-net-wildcard
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: '443'
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
   labels:
     app: exchange
     component: web
@@ -160,14 +160,14 @@ metadata:
   namespace: sca
 spec:
   ports:
-  - name: https
-    port: 443
-    protocol: TCP
-    targetPort: nginx-http
-  - name: http
-    port: 80
-    protocol: TCP
-    targetPort: nginx-http
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: nginx-http
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: nginx-http
   selector:
     app: exchange
     component: web

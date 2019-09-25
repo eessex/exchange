@@ -1,6 +1,6 @@
 ---
 project-name: exchange
-pre-deploy: 'bundle exec rake db:migrate'
+pre-deploy: "bundle exec rake db:migrate"
 git-remote: git@github.com:artsy/exchange.git
 post-deploy: .circleci/deploy_event.sh
 hokusai-required-version: "~=0.5"

@@ -1,24 +1,24 @@
 ---
-version: '2'
+version: "2"
 services:
   exchange:
     extends:
       file: build.yml
       service: exchange
     ports:
-    - 8080:8080
+      - 8080:8080
     environment:
-    - RAILS_ENV=test
-    - DATABASE_HOST=exchange-db
-    - DATABASE_USER=postgres
-    - REDIS_URL=redis://exchange-redis
+      - RAILS_ENV=test
+      - DATABASE_HOST=exchange-db
+      - DATABASE_USER=postgres
+      - REDIS_URL=redis://exchange-redis
 
-    - CI_PULL_REQUEST=$CI_PULL_REQUEST
-    - CIRCLE_PULL_REQUEST=$CIRCLE_PULL_REQUEST
-    - CIRCLE_BUILD_NUM=$CIRCLE_BUILD_NUM
-    - DANGER_GITHUB_API_TOKEN=$DANGER_GITHUB_API_TOKEN
-    - COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN
-    - CI=$CI
+      - CI_PULL_REQUEST=$CI_PULL_REQUEST
+      - CIRCLE_PULL_REQUEST=$CIRCLE_PULL_REQUEST
+      - CIRCLE_BUILD_NUM=$CIRCLE_BUILD_NUM
+      - DANGER_GITHUB_API_TOKEN=$DANGER_GITHUB_API_TOKEN
+      - COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN
+      - CI=$CI
 
     command: ./hokusai/ci.sh
     depends_on:

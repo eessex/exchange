@@ -25,11 +25,11 @@ spec:
               containerPort: 8080
           env:
             - name: PORT
-              value: '8080'
+              value: "8080"
             - name: RAILS_SERVE_STATIC_FILES
-              value: 'true'
+              value: "true"
             - name: RAILS_LOG_TO_STDOUT
-              value: 'true'
+              value: "true"
             - name: RAILS_ENV
               value: production
             - name: DATADOG_TRACE_AGENT_HOSTNAME
@@ -83,13 +83,13 @@ spec:
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 1
-            preference:
-              matchExpressions:
-              - key: tier
-                operator: In
-                values:
-                - foreground
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: tier
+                    operator: In
+                    values:
+                      - foreground
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -114,21 +114,21 @@ spec:
       containers:
         - name: exchange-sidekiq
           envFrom:
-          - configMapRef:
-              name: exchange-environment
+            - configMapRef:
+                name: exchange-environment
           image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/exchange:production
           imagePullPolicy: Always
           command: ["bundle", "exec", "sidekiq"]
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 1
-            preference:
-              matchExpressions:
-              - key: tier
-                operator: In
-                values:
-                - background
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: tier
+                    operator: In
+                    values:
+                      - background
 ---
 apiVersion: v1
 kind: Service
@@ -148,20 +148,20 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "300"
 spec:
   ports:
-  - port: 443
-    protocol: TCP
-    name: https
-    targetPort: nginx-http
-  - port: 80
-    protocol: TCP
-    name: http
-    targetPort: nginx-http
+    - port: 443
+      protocol: TCP
+      name: https
+      targetPort: nginx-http
+    - port: 80
+      protocol: TCP
+      name: http
+      targetPort: nginx-http
   selector:
     app: exchange
     component: web
     layer: application
   type: LoadBalancer
-  
+
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
